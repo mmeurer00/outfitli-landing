@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Outfitli — Your digital wardrobe</title>
+  <meta name="description" content="Photograph your clothes. Build outfits. Get dressed with confidence. Join the waitlist for Outfitli." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #0f0f0f;
+      --white: #fafaf8;
+      --muted: #888880;
+      --border: #e8e8e4;
+      --accent: #c9a96e;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--white);
+      color: var(--black);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px 48px;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      color: var(--black);
+      text-decoration: none;
+    }
+
+    .nav-cta {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--black);
+      text-decoration: none;
+      border-bottom: 1px solid var(--black);
+      padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .nav-cta:hover { color: var(--accent); border-color: var(--accent); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding-top: 80px;
+    }
+
+    .hero-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 80px 48px 80px 48px;
+      animation: fadeUp 0.9s ease both;
+    }
+
+    .eyebrow {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 32px;
+    }
+
+    h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(52px, 6vw, 88px);
+      font-weight: 300;
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+      color: var(--black);
+      margin-bottom: 32px;
+    }
+
+    h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero-body {
+      font-size: 17px;
+      font-weight: 300;
+      line-height: 1.7;
+      color: #555;
+      max-width: 420px;
+      margin-bottom: 56px;
+    }
+
+    /* FORM */
+    .waitlist-form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 400px;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+
+    .input-row:focus-within { border-color: var(--black); }
+
+    .waitlist-form input {
+      flex: 1;
+      border: none;
+      outline: none;
+      padding: 16px 20px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      background: var(--white);
+      color: var(--black);
+    }
+
+    .waitlist-form input::placeholder { color: #bbb; }
+
+    .waitlist-form button {
+      border: none;
+      background: var(--black);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 16px 24px;
+      cursor: pointer;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+
+    .waitlist-form button:hover { background: var(--accent); }
+
+    .form-note {
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.02em;
+    }
+
+    .success-msg {
+      display: none;
+      font-size: 14px;
+      color: var(--black);
+      padding: 16px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .success-msg.visible { display: block; }
+
+    /* HERO RIGHT — visual */
+    .hero-right {
+      position: relative;
+      background: #f2f0eb;
+      overflow: hidden;
+      animation: fadeIn 1.2s ease both 0.3s;
+    }
+
+    .hero-right::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #f2f0eb 0%, #e8e4dc 100%);
+    }
+
+    .hero-visual {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .wardrobe-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      padding: 48px;
+      width: 100%;
+      max-width: 420px;
+    }
+
+    .wardrobe-card {
+      background: white;
+      border-radius: 8px;
+      aspect-ratio: 3/4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+      font-size: 48px;
+      animation: floatUp 3s ease-in-out infinite;
+    }
+
+    .wardrobe-card:nth-child(2) { animation-delay: 0.5s; margin-top: 24px; }
+    .wardrobe-card:nth-child(3) { animation-delay: 1s; }
+    .wardrobe-card:nth-child(4) { animation-delay: 1.5s; margin-top: 24px; }
+
+    /* FEATURES */
+    .features {
+      padding: 120px 48px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 64px;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 64px;
+    }
+
+    .feature-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 48px;
+      font-weight: 300;
+      color: var(--border);
+      margin-bottom: 16px;
+      line-height: 1;
+    }
+
+    .feature-title {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--black);
+      margin-bottom: 12px;
+    }
+
+    .feature-body {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: #777;
+    }
+
+    /* DIVIDER */
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* CTA SECTION */
+    .cta-section {
+      padding: 120px 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      animation: fadeUp 0.8s ease both;
+    }
+
+    .cta-section h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(40px, 5vw, 72px);
+      font-weight: 300;
+      line-height: 1.1;
+      max-width: 640px;
+      margin-bottom: 48px;
+    }
+
+    .cta-section h2 em { font-style: italic; color: var(--accent); }
+
+    .cta-form {
+      display: flex;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      width: 100%;
+      max-width: 420px;
+      transition: border-color 0.2s;
+    }
+
+    .cta-form:focus-within { border-color: var(--black); }
+
+    .cta-form input {
+      flex: 1;
+      border: none;
+      outline: none;
+      padding: 16px 20px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      background: var(--white);
+      color: var(--black);
+    }
+
+    .cta-form input::placeholder { color: #bbb; }
+
+    .cta-form button {
+      border: none;
+      background: var(--black);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 16px 24px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .cta-form button:hover { background: var(--accent); }
+
+    .cta-note {
+      margin-top: 16px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 32px 48px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px;
+      font-weight: 400;
+      color: var(--black);
+    }
+
+    .footer-note {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes floatUp {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    /* MOBILE */
+    @media (max-width: 768px) {
+      nav { padding: 20px 24px; }
+
+      .hero {
+        grid-template-columns: 1fr;
+        min-height: auto;
+      }
+
+      .hero-left { padding: 100px 24px 60px; }
+      .hero-right { height: 340px; }
+      .wardrobe-grid { max-width: 280px; gap: 12px; padding: 32px; }
+
+      .features { padding: 80px 24px; }
+      .features-grid { grid-template-columns: 1fr; gap: 40px; }
+
+      .cta-section { padding: 80px 24px; }
+      .cta-form { max-width: 100%; }
+
+      footer { padding: 24px; flex-direction: column; gap: 12px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="logo">Outfitli</a>
+    <a href="#waitlist" class="nav-cta">Join waitlist</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-left">
+      <p class="eyebrow">Coming soon</p>
+      <h1>Your wardrobe,<br /><em>finally</em><br />organised.</h1>
+      <p class="hero-body">
+        Photograph your clothes. Outfitli removes the background, tags everything automatically, and helps you build outfits you'll actually wear.
+      </p>
+
+      <form class="waitlist-form" id="hero-form">
+        <div class="input-row">
+          <input type="email" placeholder="your@email.com" required id="hero-email" />
+          <button type="submit">Join waitlist</button>
+        </div>
+        <p class="form-note">No spam. Early access when we launch.</p>
+        <p class="success-msg" id="hero-success">
+          You're on the list. We'll be in touch. ✦
+        </p>
+      </form>
+    </div>
+
+    <div class="hero-right">
+      <div class="hero-visual">
+        <div class="wardrobe-grid">
+          <div class="wardrobe-card">👗</div>
+          <div class="wardrobe-card">👔</div>
+          <div class="wardrobe-card">👖</div>
+          <div class="wardrobe-card">👟</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- FEATURES -->
+  <section class="features">
+    <p class="section-label">How it works</p>
+    <div class="features-grid">
+      <div class="feature">
+        <div class="feature-number">01</div>
+        <h3 class="feature-title">Photograph your clothes</h3>
+        <p class="feature-body">Take a photo of any garment. Outfitli automatically removes the background and stores a clean, consistent image of every item you own.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-number">02</div>
+        <h3 class="feature-title">AI tags everything</h3>
+        <p class="feature-body">Category, colors, style, season, occasion — extracted automatically. Your wardrobe becomes searchable and filterable without any manual effort.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-number">03</div>
+        <h3 class="feature-title">Build outfits visually</h3>
+        <p class="feature-body">Combine garments into outfit flat-lays. See exactly how pieces work together before you get dressed. Track what you wear and when.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- CTA -->
+  <section class="cta-section" id="waitlist">
+    <h2>Get dressed with<br /><em>confidence</em>, every day.</h2>
+    <form class="cta-form" id="cta-form">
+      <input type="email" placeholder="your@email.com" required id="cta-email" />
+      <button type="submit">Join waitlist</button>
+    </form>
+    <p class="cta-note">Early access. No credit card required.</p>
+    <p class="success-msg" id="cta-success" style="margin-top:16px; font-size:14px; color:#555;">
+      You're on the list. We'll be in touch. ✦
+    </p>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span class="footer-logo">Outfitli</span>
+    <span class="footer-note">© 2026 Outfitli. All rights reserved.</span>
+  </footer>
+
+  <script>
+    // Collect emails to localStorage (export manually from browser)
+    function getWaitlist() {
+      return JSON.parse(localStorage.getItem('outfitli_waitlist') || '[]')
+    }
+
+    function addToWaitlist(email) {
+      const list = getWaitlist()
+      if (!list.includes(email)) {
+        list.push(email)
+        localStorage.setItem('outfitli_waitlist', JSON.stringify(list))
+      }
+    }
+
+    function handleSubmit(emailId, successId) {
+      const email = document.getElementById(emailId).value
+      if (!email) return
+      addToWaitlist(email)
+      document.getElementById(successId).classList.add('visible')
+      document.getElementById(emailId).value = ''
+    }
+
+    document.getElementById('hero-form').addEventListener('submit', (e) => {
+      e.preventDefault()
+      handleSubmit('hero-email', 'hero-success')
+    })
+
+    document.getElementById('cta-form').addEventListener('submit', (e) => {
+      e.preventDefault()
+      handleSubmit('cta-email', 'cta-success')
+    })
+
+    // To export emails: open browser console and run:
+    // console.log(JSON.parse(localStorage.getItem('outfitli_waitlist')))
+  </script>
+
+</body>
+</html>
